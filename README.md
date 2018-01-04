@@ -67,7 +67,7 @@ and `N` is the number of simultaneous predictions to make.
 
 ## Results
 
-The following results were produced in 2015 on then-new hardware, and
+The following results were produced in 2015 on then-current hardware, and
 could currently do with updating.  Double precision was used
 throughout.
 
