@@ -26,5 +26,8 @@ cov_gpu_test: cov_gpu_test.cu cov_gpu.o
 cov_gpu.o: cov_gpu.cu cov_gpu.hpp
 	nvcc $(CXXFLAGS) -c cov_gpu.cu
 
-benchmark: libgp.a benchmark.cpp gp_gpu.hpp cov_gpu.hpp cov_gpu.o state.o matrix-util.o
-	$(CXX) $(CXXFLAGS) -fopenmp -I$(CUDA_INC) benchmark.cpp -o benchmark cov_gpu.o state.o matrix-util.o -L. -L/home/raid/ots22/lib/ -L$(CUDA_LIB) -lgp -lblas -llapack -larmadillo -lcublas -lcudart
+bench/benchmark: libgp.a bench/benchmark.cpp gp_gpu.hpp cov_gpu.hpp cov_gpu.o bench/state.o bench/matrix-util.o
+	cd bench && $(CXX) $(CXXFLAGS) -I.. -I$(CUDA_INC) -fopenmp benchmark.cpp -o benchmark ../cov_gpu.o state.o matrix-util.o -L.. -lgp -lblas -llapack -larmadillo -lcublas -lcudart
+
+bench/%.o: bench/%.cpp bench/matrix-util.hpp bench/state.hpp bench/romenskii.hpp
+	cd bench && $(CXX) $(CXXFLAGS) -I.. -c $(notdir $<)
