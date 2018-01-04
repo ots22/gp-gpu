@@ -4,6 +4,7 @@
 #include <armadillo>
 #include <algorithm>
 #include <string>
+#include <assert.h>
 #include "cov.hpp"
 
 using arma::ivec;
