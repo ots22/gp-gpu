@@ -6,6 +6,9 @@
 #ifdef TVMET_DEBUG
 #include <iostream>
 #endif
+#include <cmath>
+using std::isnan;
+using std::isinf;
 #include <tvmet/Vector.h>
 #include <tvmet/Matrix.h>
 

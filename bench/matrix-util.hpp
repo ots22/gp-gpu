@@ -2,6 +2,9 @@
 #define MATRIX_UTIL_HPP
 
 #include <iostream>
+#include <cmath>
+using std::isnan;
+using std::isinf;
 #include <tvmet/Vector.h>
 #include <tvmet/Matrix.h>
 #include <math.h>
