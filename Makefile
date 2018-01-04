@@ -11,14 +11,14 @@ optim.o: optim.cpp optim.hpp gp.hpp
 cov.o: cov.cpp cov.hpp
 	$(CXX) $(CXXFLAGS) -c cov.cpp
 
-test: libgp.a test.cpp
-	$(CXX) $(CXXFLAGS) test.cpp -o test -L.  -lgp -lnlopt -lblas -llapack -larmadillo
-
 gp_train: libgp.a gp_train.cpp
 	$(CXX) $(CXXFLAGS) gp_train.cpp -o gp_train -L. -lgp -lnlopt -lblas -llapack -larmadillo -lconfig++
 
 gp_gpu_example: libgp.a gp_gpu.hpp gp_gpu_example.cpp cov_gpu.o
 	$(CXX) $(CXXFLAGS) -I$(CUDA_INC) gp_gpu_example.cpp -o gp_gpu_example cov_gpu.o -L. -lgp -lnlopt -lblas -llapack -larmadillo -lconfig++ -lcublas -lcudart
+
+cov_simple_test: cov_simple_test.cpp cov.hpp cov.o
+	$(CXX) $(CXXFLAGS) cov_simple_test.cpp -o cov_simple_test -L. -lgp -lblas -llapack -larmadillo
 
 cov_gpu_test: cov_gpu_test.cu cov_gpu.o
 	nvcc $(CXXFLAGS) cov_gpu_test.cu -o cov_gpu_test cov_gpu.o -L. -lgp -lnlopt -lblas -llapack -larmadillo -lconfig++ -lcublas -lcudart
