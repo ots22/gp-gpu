@@ -98,10 +98,10 @@ int main(int argc, char *argv[])
 	vec diff (result_gpu - result_cpu);
 	double err = norm(diff,1.0)/Npoints;
 	
-	// std::cout << "CPU: time for " << Npoints << " evaluations was " << duration_cpu << " seconds\n";
-	// std::cout << "GPU: time for " << Npoints << " evaluations was " << duration_gpu << " seconds\n";
-	// std::cout << "mean absolute difference between the results was " << err << std::endl;
-	// std::cout << "(CPU: time for Romenski was " << duration_romenski << " seconds\n";
+	std::cout << "CPU: time for " << Npoints << " evaluations was " << duration_cpu << " seconds\n";
+	std::cout << "GPU: time for " << Npoints << " evaluations was " << duration_gpu << " seconds\n";
+	std::cout << "mean absolute difference between the results was " << err << std::endl;
+	std::cout << "(CPU: time for the analytical expression was " << duration_romenski << " seconds)\n";
 
-	std::cout << Npoints << " " << 1000*duration_cpu << " " << 1000*duration_gpu << std::endl;
+	//std::cout << Npoints << " " << 1000*duration_cpu << " " << 1000*duration_gpu << std::endl;
 }
