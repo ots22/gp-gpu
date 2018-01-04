@@ -1,0 +1,24 @@
+CPU: time for 20000 evaluations was 0.0427701 seconds
+GPU: time for 20000 evaluations was 0.00668666 seconds
+mean absolute difference between the results was 2.33416e-10
+(CPU: time for Romenski was 0.00286754 seconds
+tycho:~/projects/gp-cpp[0]$ LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 20000 evaluations was 0.0493331 seconds
+GPU: time for 20000 evaluations was 0.00641459 seconds
+mean absolute difference between the results was 2.33416e-10
+(CPU: time for Romenski was 0.00291061 seconds
+tycho:~/projects/gp-cpp[0]$ LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 20000 evaluations was 0.0448204 seconds
+GPU: time for 20000 evaluations was 0.00645774 seconds
+mean absolute difference between the results was 2.33416e-10
+(CPU: time for Romenski was 0.00285808 seconds
+tycho:~/projects/gp-cpp[0]$ LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 20000 evaluations was 0.0397435 seconds
+GPU: time for 20000 evaluations was 0.00687015 seconds
+mean absolute difference between the results was 2.33416e-10
+(CPU: time for Romenski was 0.00284293 seconds
+tycho:~/projects/gp-cpp[0]$ LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 20000 evaluations was 0.0603567 seconds
+GPU: time for 20000 evaluations was 0.00644247 seconds
+mean absolute difference between the results was 2.33416e-10
+(CPU: time for Romenski was 0.00477097 seconds

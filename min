@@ -1,0 +1,5 @@
+#!/usr/bin/env python2.7
+
+import numpy as np
+data = np.genfromtxt('/dev/stdin')
+np.savetxt('/dev/stdout', np.min(data,0)[np.newaxis,:])

@@ -1,0 +1,30 @@
+ OMP_NUM_THREADS=16 LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 100 evaluations was 0.0140768 seconds
+GPU: time for 100 evaluations was 0.00151518 seconds
+mean absolute difference between the results was 3.55555e-07
+(CPU: time for Romenski was 0.00377724 seconds
+tycho:~/projects/gp-cpp[0]$ OMP_NUM_THREADS=16 LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 100 evaluations was 0.0158108 seconds
+GPU: time for 100 evaluations was 0.00144835 seconds
+mean absolute difference between the results was 3.55555e-07
+(CPU: time for Romenski was 0.00375964 seconds
+tycho:~/projects/gp-cpp[0]$ OMP_NUM_THREADS=16 LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 100 evaluations was 0.0147514 seconds
+GPU: time for 100 evaluations was 0.0014557 seconds
+mean absolute difference between the results was 3.55555e-07
+(CPU: time for Romenski was 0.000838041 seconds
+tycho:~/projects/gp-cpp[0]$ OMP_NUM_THREADS=16 LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 100 evaluations was 0.0140432 seconds
+GPU: time for 100 evaluations was 0.00152152 seconds
+mean absolute difference between the results was 3.55555e-07
+(CPU: time for Romenski was 0.00413211 seconds
+tycho:~/projects/gp-cpp[0]$ 
+tycho:~/projects/gp-cpp[0]$ 
+tycho:~/projects/gp-cpp[0]$ 
+tycho:~/projects/gp-cpp[0]$ 
+tycho:~/projects/gp-cpp[0]$ 
+tycho:~/projects/gp-cpp[0]$ OMP_NUM_THREADS=16 LD_LIBRARY_PATH=/lsc/opt/gcc-4.8.3/lib64:/lsc/opt/cuda-6.0/lib64 ./benchmark
+CPU: time for 100 evaluations was 0.0118234 seconds
+GPU: time for 100 evaluations was 0.00144632 seconds
+mean absolute difference between the results was 3.55555e-07
+(CPU: time for Romenski was 0.00230837 seconds
