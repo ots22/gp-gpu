@@ -90,11 +90,23 @@ void cov_all_wrapper(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL 
 	cov_all_kernel <<< 10, threads_per_block >>> (result, N, n_dim, xnew, xs, theta);
 }
 
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+  if (code != cudaSuccess)
+    {
+      fprintf(stderr,"GPUassert: %s %s:%d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+    }
+}
+
 void cov_batch_wrapper(REAL *result, int Nnew, int N, int n_dim, REAL *xsnew, 
 			  REAL *xs, REAL *theta)
 {
 	dim3 threads_per_block(8,32);
 	dim3 blocks(250,625);
 	cov_batch <<< blocks, threads_per_block >>> (result, Nnew, N, n_dim, xsnew, xs, theta);
-}
 
+	gpuErrchk( cudaPeekAtLastError() );
+	gpuErrchk( cudaDeviceSynchronize() );
+}
