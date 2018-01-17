@@ -23,6 +23,16 @@ libnlopt0
 libconfig++-dev
 ```
 
+For tvmet:
+```
+$ wget https://downloads.sourceforge.net/project/tvmet/Tar.Gz_Bz2%20Archive/1.7.2/tvmet-1.7.2.tar.bz2
+$ tar xf tvmet-1.7.2.tar.bz2
+$ cd tvmet-1.7.2
+$ ./configure
+$ make
+$ sudo make install
+```
+
 ## Description
 
 The training data for the Gaussian process are internal energies
