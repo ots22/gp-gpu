@@ -10,7 +10,7 @@ class Romenskii : public Eos {
 public:
 	virtual double rho0(void) const { return rho_0; }
 	
-	virtual double e_internal(double S, mat3 G) const
+	virtual double e_internal(double S, arma::mat33 G) const
 	{
 		assert(is_symmetric(G));
 		double G11=G(0,0), G12=G(0,1), G13=G(0,2), G22=G(1,1), G23=G(1,2), G33=G(2,2);
@@ -19,7 +19,7 @@ public:
 		return result;
 	}
 	
-	virtual double entropy(double E, mat3 G) const
+	virtual double entropy(double E, arma::mat33 G) const
 	{
 		assert(is_symmetric(G));
 		double G11=G(0,0), G12=G(0,1), G13=G(0,2), G22=G(1,1), G23=G(1,2), G33=G(2,2);
@@ -28,12 +28,13 @@ public:
 		return result;
 	}
 
-	virtual mat3 sigma(double S, mat3 G) const
+	virtual arma::mat33 sigma(double S, arma::mat33 G) const
 	{
 		assert(is_symmetric(G));
 
 		double G11=G(0,0), G12=G(0,1), G13=G(0,2), G22=G(1,1), G23=G(1,2), G33=G(2,2);
-		mat3 result(-99999);
+		arma::mat33 result;
+		result.fill(-99999.0);
 #               include "sympy/romenskii_stress.inc"
 
 		assert(is_approx_symmetric(result));
@@ -43,10 +44,11 @@ public:
 
 	// Useful helper routine for the F derivatives, since stress
 	// is expressed in terms of G rather than F.
- 	mat3 dsigma_dG(double S, mat3 G, int i, int j) const
+ 	arma::mat33 dsigma_dG(double S, arma::mat33 G, int i, int j) const
  	{
 		double G11=G(0,0), G12=G(0,1), G13=G(0,2), G22=G(1,1), G23=G(1,2), G33=G(2,2);
-		mat3 result(-99999);
+		arma::mat33 result;
+		result.fill(-99999);
  		switch (i + 10*j) {
  		case 00:
 #                       include "sympy/romenskii_dsigma11_dG.inc"
@@ -82,14 +84,15 @@ public:
 		return result;
 	}
 
-  	virtual mat3 A(double S, mat3 F, int n, int beta) const
+  	virtual arma::mat33 A(double S, arma::mat33 F, int n, int beta) const
  	{
-		mat3 inv_F(inv(F));
-		mat3 G(inv_F * trans(inv_F));
+		arma::mat33 inv_F(inv(F));
+		arma::mat33 G(inv_F * trans(inv_F));
 
 		double rho = rho_0 / det(F);
 
-  		mat3 result(0.0);
+  		arma::mat33 result;
+		result.fill(0.0);
 		for (int i=0; i<3; i++)
 			for (int j=0; j<3; j++)
 				// reduce over both components of G:
@@ -107,14 +110,15 @@ public:
   		return result;
   	}
 
-	virtual mat3 B(double S, mat3 F) const
+	virtual arma::mat33 B(double S, arma::mat33 F) const
 	{
-		mat3 G(FingerG(F));
+		arma::mat33 G(FingerG(F));
 		double G11=G(0,0), G12=G(0,1), G13=G(0,2), G22=G(1,1), G23=G(1,2), G33=G(2,2);		
 
 		double rho = rho_0 * sqrt(det(G));
 
-		mat3 result(-99999);
+		arma::mat33 result;
+		result.fill(-99999);
 #               include "sympy/romenskii_dsigma_dS.inc"
 
 		result /= rho;

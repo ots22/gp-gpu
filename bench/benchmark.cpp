@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	std::default_random_engine rgen(101);
 	std::uniform_real_distribution<double> G_diag_d(0.95, 1.05);
 	std::uniform_real_distribution<double> G_off_diag_d(-0.05, 0.05);
-	std::uniform_real_distribution<double> potT_d(100.0, 800.0);
+	std::uniform_real_distribution<double> potT_d(0.0, 160.0);
 
 	DenseGP gp_cpu("eos-example.gp");
 	DenseGP_GPU gp_gpu("eos-example.gp");
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 
 #pragma omp parallel for	
 	for (int i=0; i<Npoints; i++) {
-		mat3 G;
+		arma::mat33 G;
 		G(0,0) = xs(0,i); G(0,1) = xs(5,i); G(0,2) = xs(4,i);
 		G(1,0) = xs(5,i); G(1,1) = xs(1,i); G(1,2) = xs(3,i);
 		G(2,0) = xs(4,i); G(2,1) = xs(3,i); G(2,2) = xs(2,i);
