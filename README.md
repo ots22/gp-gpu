@@ -12,7 +12,6 @@ The following packages are required as external dependencies:
  - Armadillo (and LAPACK): http://arma.sourceforge.net
  - NLopt: http://ab-initio.mit.edu/wiki/index.php/NLopt
  - libconfig: http://www.hyperrealm.com/libconfig/
- - tvmet http://tvmet.sourceforge.net/
  
 On Ubuntu, the following packages can be installed using apt (there is
 no package for tvmet).
@@ -21,16 +20,6 @@ no package for tvmet).
 libarmadillo-dev
 libnlopt0
 libconfig++-dev
-```
-
-For tvmet:
-```
-$ wget https://downloads.sourceforge.net/project/tvmet/Tar.Gz_Bz2%20Archive/1.7.2/tvmet-1.7.2.tar.bz2
-$ tar xf tvmet-1.7.2.tar.bz2
-$ cd tvmet-1.7.2
-$ ./configure
-$ make
-$ sudo make install
 ```
 
 ## Description
