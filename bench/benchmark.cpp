@@ -1,3 +1,4 @@
+#include <libconfig.h++>
 #include <chrono>
 #include <random>
 #include "gp_gpu.hpp"
@@ -15,25 +16,47 @@ private:
     std::chrono::time_point<clock_> beg_;
 };
 
+void read_cfg(vec &lbound, vec &ubound)
+{
+	const int Ninput = lbound.n_rows;
+	using namespace libconfig;
+	Config cfg;
+	cfg.readFile("benchmark.cfg");
+	
+	Setting &lbound_cfg = cfg.lookup("lbound");
+	for (int i=0; i < Ninput; i++) lbound(i) = lbound_cfg[i];
+	Setting &ubound_cfg = cfg.lookup("ubound");
+	for (int i=0; i < Ninput; i++) ubound(i) = ubound_cfg[i];	
+}
+
 int main(int argc, char *argv[])
 {
 	int Npoints = 0;
 	Npoints = atoi(argv[1]);
-	const int Ninput = 7;
 	
-	std::default_random_engine rgen(101);
-	std::uniform_real_distribution<double> G_diag_d(0.95, 1.05);
-	std::uniform_real_distribution<double> G_off_diag_d(-0.05, 0.05);
-	std::uniform_real_distribution<double> potT_d(0.0, 150.0);
-
 	DenseGP gp_cpu("eos-example.gp");
 	DenseGP_GPU gp_gpu("eos-example.gp");
 
-	mat xs(Ninput, Npoints);
-	// generate some random points
-	for (int i=0; i<Npoints; i++) {
-		xs.col(i) = vec{G_diag_d(rgen), G_diag_d(rgen), G_diag_d(rgen), G_off_diag_d(rgen), G_off_diag_d(rgen), G_off_diag_d(rgen), potT_d(rgen)};
+	int Ninput = gp_cpu.input_dimension();
+	vec lbound(Ninput);
+	vec ubound(Ninput);
+
+	try {
+		read_cfg(lbound, ubound);
+	} catch  (libconfig::ParseException &pe) {
+		std::cerr << "There was an error reading the configuration file, benchmark.cfg.\n"
+			  << "On line " <<pe.getLine() << ": " << pe.getError() << ".\n"
+			  << "Terminating.\n";
+		exit(1);
 	}
+
+	// generate some random points
+	mat xs(Ninput, Npoints, arma::fill::randu);
+
+	// scale and shift
+	xs.each_col() %= (ubound - lbound);
+	xs.each_col() += lbound;
+
 	Mat<REAL> Rxs = arma::conv_to<Mat<REAL> >::from(xs);
 	
 	
@@ -47,7 +70,7 @@ int main(int argc, char *argv[])
 	///////////// start clock /////////////
 	stopwatch.reset();
 
-#pragma omp parallel for	
+#       pragma omp parallel for	
 	for (int i=0; i<Npoints; i++) {
 		result_cpu(i) = gp_cpu.predict(xs.col(i), 0);
 	}
@@ -69,8 +92,8 @@ int main(int argc, char *argv[])
 	vec diff (result_gpu - result_cpu);
 	double err = norm(diff,1.0)/Npoints;
 
-	vec trial{0.94785, 1.11898, 1.09813, -0.230669, -0.141593, -0.026315, 53.6836};
-	double expected(6.93661);
+	//vec trial{0.94785, 1.11898, 1.09813, -0.230669, -0.141593, -0.026315, 53.6836};
+	//double expected(6.93661);
 	//std::cout << gp_cpu.predict(trial, 0) << std::endl;
 	//std::cout << gp_gpu.predict(trial, 0) << std::endl;
 	//std::cout << expected << std::endl;

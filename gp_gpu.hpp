@@ -60,7 +60,12 @@ public:
 		return N;
 	}
 
-	virtual double predict(vec xnew, obs_kind Tnew, vec& work) const final
+	virtual int input_dimension(void) const
+	{
+		return Ninput;
+	}
+
+	virtual double predict(const vec& xnew, obs_kind Tnew, vec& work) const final
 	{
 		// work === k, of length N
 		// for (unsigned i=0; i<N; i++) {
@@ -82,7 +87,7 @@ public:
 		return double(result);
 	}
 
-	virtual void predict_batch(Col<REAL> &result, Mat<REAL> xnew, obs_kind Tnew) const final
+	virtual void predict_batch(Col<REAL> &result, const Mat<REAL> &xnew, obs_kind Tnew) const final
 	{
 		REAL alpha = 1.0, beta = 0.0;
 		cudaMemcpy(xnew_d, xnew.memptr(), Ninput*xnew.n_cols*sizeof(REAL), cudaMemcpyHostToDevice);
@@ -103,7 +108,7 @@ public:
 		if (err != cudaSuccess) { printf("%s line %d: CUDA Error: %s\n", __FILE__, __LINE__, cudaGetErrorString(err)); }
 	}
 
-	virtual double predict(vec xnew, obs_kind Tnew) const final
+	virtual double predict(const vec& xnew, obs_kind Tnew) const final
 	{
 		vec k(N);
 		return predict(xnew, Tnew, k);

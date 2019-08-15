@@ -46,7 +46,7 @@ public:
 	virtual int data_length(void) const = 0;
 
 	virtual double log_lik(void) const = 0;
-	virtual double predict(vec xnew, obs_kind T, vec& work) const = 0;
+	virtual double predict(const vec& xnew, obs_kind T, vec& work) const = 0;
 
 	virtual ~GP() {};
 	GP(vec hypers) : hypers(hypers) {}
@@ -97,6 +97,11 @@ public:
 		return N;
 	}
 
+	virtual int input_dimension(void) const
+	{
+		return Ninput;
+	}
+
 	virtual double log_lik(void) const final
 	{
 		double logdet;
@@ -106,7 +111,7 @@ public:
 		return -0.5 * (logdet + dot(ts, invCts));
 	}
 
-	virtual double predict(vec xnew, obs_kind Tnew, vec& work) const final
+	virtual double predict(const vec& xnew, obs_kind Tnew, vec& work) const final
 	{
 		// work === k, of length N
 		for (unsigned i=0; i<N; i++) {
@@ -116,7 +121,7 @@ public:
 		return dot(work, invCts);
 	}
 
-	virtual double predict(vec xnew, obs_kind Tnew) const final
+	virtual double predict(const vec& xnew, obs_kind Tnew) const final
 	{
 		vec k(N);
 		for (unsigned i=0; i<N; i++) {
