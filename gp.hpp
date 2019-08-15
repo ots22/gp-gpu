@@ -70,30 +70,26 @@ class DenseGP : public GP {
 
 	// The component of this vector corresponds to an observation kind:
 	// Noise on value observations component 0, noise on derivatives 1..Ninput (inclusive)
-	vec noise(void) const {
-		return hypers.rows(0,3);//hypers.rows(0,Ninput);
+	double noise(void) const {
+		return 4.0e-8;
 	}
 	
 	// The remaining hyperparameters (e.g. lengthscales etc)
 	vec theta(void) const {
-		return hypers.rows(4,7); //hypers.rows(Ninput+1, hypers.n_rows-1);
+		return hypers;
 	}
 
 	virtual void update_matrices(void) final
 	{
-		vec noise1(noise());
-		vec noise2 {noise1(0), noise1(1), noise1(1), noise1(1), noise1(2), noise1(2), noise1(2), noise1(3)}; 
 		for (unsigned j=0; j<N; j++) {
 			for (unsigned i=0; i<N; i++) {
 				vec xi = xs.row(i).t();
 				vec xj = xs.row(j).t();
 				C(i,j) = cov(Ts(i), Ts(j), xi, xj, theta());
-				if (i==j) C(i,j) += noise2(Ts(i));
+				if (i==j) C(i,j) += noise();
 			}
 		}
-//		invC = inv(C);
 		invCts = solve(C,ts);
-//		invCts = invC * ts;
 	}
 public:
 	virtual int data_length(void) const

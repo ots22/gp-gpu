@@ -42,13 +42,13 @@ class DenseGP_GPU : public GP {
 	// handle for CUBLAS calls
 	cublasHandle_t cublasHandle;
 
-	vec noise(void) const {
-		return hypers.rows(0,3);//hypers.rows(0,Ninput);
+	double noise(void) const {
+		return 4.0e-8;
 	}
 	
 	// The remaining hyperparameters (e.g. lengthscales etc)
 	vec theta(void) const {
-		return hypers.rows(4,7); //hypers.rows(Ninput+1, hypers.n_rows-1);
+		return hypers;
 	}
 
 	virtual void update_matrices(void) { throw std::runtime_error("update_matrices not implemented"); }

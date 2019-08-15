@@ -2,26 +2,19 @@
 
 static double cov_val(vec x, vec y, vec hypers)
 {
-	double scale = hypers(0);
-	//vec r(hypers.rows(1,hypers.n_rows-1));
-
-	// bit of a hack.  Assumes a size on the vectors
-	vec r{hypers(1), hypers(1), hypers(1), hypers(2), hypers(2), hypers(2), hypers(3)};
-
+	double scale = hypers(hypers.n_rows-1);
 	double s = 0.0;
 	for (unsigned i=0; i<x.n_rows; i++)
 	{
-		s+=pow(x(i)-y(i),2)/(r(i)*r(i));
+		double d = (x(i)-y(i))/hypers[i];
+		s += d * d;
 	}
 	return scale * exp(-0.5*s);
 }
 
 static double dcov_x1(int n, vec x, vec y, vec hypers)
 {
-//	vec r(hypers.rows(1,hypers.n_rows-1));
-	vec r{hypers(1), hypers(1), hypers(1), hypers(2), hypers(2), hypers(2), hypers(3)};
-
-	return -(x(n)-y(n))/(r(n)*r(n)) * cov_val(x,y,hypers);
+	return -(x(n)-y(n))/(hypers(n)*hypers(n)) * cov_val(x,y,hypers);
 }
 
 static double dcov_x2(int n, vec x, vec y, vec hypers)
@@ -31,11 +24,8 @@ static double dcov_x2(int n, vec x, vec y, vec hypers)
 
 static double d2cov_xx(int n, int m, vec x, vec y, vec hypers)
 {
-//	vec r(hypers.rows(1,hypers.n_rows-1));
-	vec r{hypers(1), hypers(1), hypers(1), hypers(2), hypers(2), hypers(2), hypers(3)};
-
-	return ((n==m)?(cov_val(x,y,hypers)/(r(n)*r(n))):0.0) 
-		- (x(n)-y(n))/(r(n)*r(n)) * dcov_x2(m,x,y,hypers);
+	return ((n==m)?(cov_val(x,y,hypers)/(hypers(n)*hypers(n))):0.0) 
+		- (x(n)-y(n))/(hypers(n)*hypers(n)) * dcov_x2(m,x,y,hypers);
 }
 
 double cov(int n, int m, vec x, vec y, vec hypers)
