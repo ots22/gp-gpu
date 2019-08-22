@@ -46,7 +46,7 @@ public:
 	virtual int data_length(void) const = 0;
 
 	virtual double log_lik(void) const = 0;
-	virtual double predict(const vec& xnew, obs_kind T, vec& work) const = 0;
+	virtual double predict(const vec& xnew, obs_kind T) const = 0;
 
 	virtual ~GP() {};
 	GP(vec hypers) : hypers(hypers) {}
@@ -90,6 +90,7 @@ class DenseGP : public GP {
 			}
 		}
 		invCts = solve(C,ts);
+		invC = inv(C);
 	}
 public:
 	virtual int data_length(void) const
@@ -130,6 +131,24 @@ public:
 
 		return dot(k, invCts);
 		
+	}
+
+	// predict both the value and variance	
+	virtual double predict_variance(const vec& xnew, obs_kind Tnew, double& var) const final
+	{
+		vec k(N);
+		for (unsigned i=0; i<N; i++) {
+			k(i) = cov(Tnew, Ts(i), xnew, xs.row(i).t(), theta());
+		}
+		double kappa;
+		kappa = cov(Tnew, Tnew, xnew, xnew, theta()); 
+
+		vec invCk;
+		invCk = invC * k;
+		// invCk = solve(C, k);
+		var = fabs(kappa - dot(k, invCk));
+
+		return dot(k, invCts);
 	}
 
 	DenseGP(vec hypers, mat xs, vec ts, vec_obs_kind Ts)

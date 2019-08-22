@@ -9,6 +9,8 @@ typedef double REAL;
 
 void cov_all_wrapper(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL *theta);
 
+void cov_diag_wrapper(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL *theta);
+
 void cov_val_wrapper(REAL *result_d, int n_dim, REAL *x, REAL *y, REAL *hypers);
 
 void cov_batch_wrapper(REAL *result, int Nnew, int N, int n_dim, REAL *xsnew, 

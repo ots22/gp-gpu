@@ -40,9 +40,19 @@ __global__ void cov_batch(REAL *result, int Nnew, int N, int n_dim, REAL *xsnew,
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	int j = blockIdx.y * blockDim.y + threadIdx.y;
 	if (i<N && j<Nnew) {
-		result[j+Nnew*i] = cov_val_d(n_dim, xsnew + n_dim*j, xs + n_dim*i, theta);
+		// result[j+Nnew*i] = cov_val_d(n_dim, xsnew + n_dim*j, xs + n_dim*i, theta);
+		result[i+N*j] = cov_val_d(n_dim, xsnew + n_dim*j, xs + n_dim*i, theta);
 	}
 }
+
+__global__ void cov_diag_kernel(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL *theta)
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	if (i<N) {
+		result[i] = cov_val_d(n_dim, xnew + n_dim*i, xs + n_dim*i, theta);
+	}
+}
+
 
 // wrapper
 void cov_all_wrapper(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL *theta)
@@ -50,6 +60,13 @@ void cov_all_wrapper(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL 
 	const int threads_per_block = 256;
 	cov_all_kernel <<< 10, threads_per_block >>> (result, N, n_dim, xnew, xs, theta);
 }
+
+void cov_diag_wrapper(REAL *result, int N, int n_dim, REAL *xnew, REAL *xs, REAL *theta)
+{
+	const int threads_per_block = 256;
+	cov_diag_kernel <<< 10, threads_per_block >>> (result, N, n_dim, xnew, xs, theta);
+}
+
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)

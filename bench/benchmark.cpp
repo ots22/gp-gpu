@@ -61,10 +61,12 @@ int main(int argc, char *argv[])
 	
 	
 	vec result_cpu(Npoints);
+	vec result_cpu_var(Npoints);
 	Col<REAL> result_gpu(Npoints);
+	Col<REAL> result_gpu_var(Npoints);
 
 	Timer stopwatch;
-	double duration_cpu, duration_gpu;
+	double duration_cpu, duration_cpu_var, duration_gpu, duration_gpu_var;
 
 
 	///////////// start clock /////////////
@@ -92,13 +94,73 @@ int main(int argc, char *argv[])
 	vec diff (result_gpu - result_cpu);
 	double err = norm(diff,1.0)/Npoints;
 
-	//vec trial{0.94785, 1.11898, 1.09813, -0.230669, -0.141593, -0.026315, 53.6836};
-	//double expected(6.93661);
-	//std::cout << gp_cpu.predict(trial, 0) << std::endl;
-	//std::cout << gp_gpu.predict(trial, 0) << std::endl;
-	//std::cout << expected << std::endl;
+
+	///////////// start clock /////////////
+	stopwatch.reset();
+
+#       pragma omp parallel for	
+	for (int i=0; i<Npoints; i++) {
+		result_cpu(i) = gp_cpu.predict_variance(xs.col(i), 0, result_cpu_var(i));
+	}
+
+	duration_cpu_var = stopwatch.elapsed();
+	/////////////  stop clock  ////////////
+
+
+
 	
-	std::cout << "CPU: time for " << Npoints << " evaluations was " << duration_cpu << " seconds\n";
-	std::cout << "GPU: time for " << Npoints << " evaluations was " << duration_gpu << " seconds\n";
-	std::cout << "mean absolute difference between the results was " << err << std::endl;
+	///////////// start clock /////////////
+	stopwatch.reset();
+
+	gp_gpu.predict_batch_variance(result_gpu, result_gpu_var, Rxs, 0);
+
+	duration_gpu_var = stopwatch.elapsed();
+	/////////////  stop clock  ////////////
+
+	vec diff_var (result_cpu_var - result_gpu_var);
+	double err_var = norm(diff_var,1.0)/Npoints;
+
+	
+	// vec trial{0.94785, 1.11898, 1.09813, -0.230669, -0.141593, -0.026315, 53.6836};
+	// double expected(6.93661);
+	// double var;
+	// std::cout << gp_cpu.predict_variance(trial, 0, var) << std::endl;
+	// std::cout << "   (predicted std. dev. of " << sqrt(var) << " )" << std::endl;
+	// std::cout << gp_gpu.predict(trial, 0) << std::endl;
+	// std::cout << expected << std::endl;
+
+	// vec trial{2.5};
+	// double expected(2.5 * 2.5);
+	// double var;
+	// std::cout << gp_cpu.predict_variance(trial, 0, var) << std::endl;
+	// std::cout << "   (predicted std. dev. of " << sqrt(var) << " )" << std::endl;
+	// std::cout << gp_gpu.predict(trial, 0) << std::endl;
+	// std::cout << expected << std::endl;
+
+	
+	// vec mean(3);
+	// vec variance(3);
+	
+	// gp_gpu.predict_batch_variance(mean, variance, mat{1.5, 2.5, 3.5}, 0);
+	
+	// for (int i = 0; i < 1000; i++) {
+	// 	double var;
+	// 	std::cerr << 0.01 * i << "  "
+	// 		  << gp_cpu.predict_variance(vec{0.01 * i}, 0, var) << " " << var << " ";
+	// 	std::cerr << gp_gpu.predict_variance(vec{0.01 * i}, 0, var) << " " << var << "\n";
+	// }
+
+	// std::cout << "mean: " << mean << "var: " << variance << "\n";
+	
+	std::cout << "CPU: time for " << Npoints << " evaluations was:\n"
+		  << "    mean only:          " << duration_cpu << " seconds\n"
+		  << "    including variance: " << duration_cpu_var << " seconds\n\n";
+
+	std::cout << "GPU: time for " << Npoints << " evaluations was:\n"
+		  << "    mean only:          " << duration_gpu << " seconds\n"
+		  << "    including variance: " << duration_gpu_var << " seconds\n\n";
+	
+	std::cout << "mean absolute difference between predicted means: " << err << std::endl;
+	std::cout << "mean absolute difference between predicted variance: " << err_var << std::endl;
+	
 }
